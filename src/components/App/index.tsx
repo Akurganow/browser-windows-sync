@@ -15,6 +15,11 @@ type Screen = [string, WindowDetails]
 const INTERVAL = 16;
 const STORAGE_PREFIX = 'screenId';
 
+/**
+ * The Index component is a React component that creates a shared space across multiple windows.
+ * Each window is represented as a vertex of a polygon, and the polygon is drawn across all windows.
+ * The component uses local storage to keep track of all open windows and their details.
+ */
 const Index = () => {
     const [windowDetails, setWindowDetails] = useState(getWindowDetails());
     const screenId = useMemo(() => `${STORAGE_PREFIX}${getScreenId()}`, [])
