@@ -1,6 +1,17 @@
 # Getting Started with Create React Index
 
-This project was bootstrapped with [Create React Index](https://github.com/facebook/create-react-app).
+This project is a React application that creates a shared space across multiple windows. Each window is represented as a vertex of a polygon, and the polygon is drawn across all windows. The application uses local storage to keep track of all open windows and their details.
+
+You can view the live application [here](https://serene-phoenix-f7789d.netlify.app/).
+
+## How it works
+
+1. Open the application in multiple windows.
+2. Each window represents a vertex of a polygon.
+3. The polygon is drawn across all windows, creating a shared space.
+4. The application tracks the position and size of each window, updating the polygon as windows are moved or resized.
+
+![Application Demo](public/rec.gif)
 
 ## Available Scripts
 
