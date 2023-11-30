@@ -1,4 +1,5 @@
-import React, {CSSProperties, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import './styles.css'
 
 type WindowDetails = {
     sX: number;
@@ -14,7 +15,7 @@ type Screen = [string, WindowDetails]
 const INTERVAL = 16;
 const STORAGE_PREFIX = 'screenId';
 
-const App = () => {
+const Index = () => {
     const [windowDetails, setWindowDetails] = useState(getWindowDetails());
     const screenId = useMemo(() => `${STORAGE_PREFIX}${getScreenId()}`, [])
     const screens = useMemo(() => {
@@ -24,15 +25,6 @@ const App = () => {
         return [currentScreen, ...screens]
     }, [screenId, windowDetails])
     const path = useMemo(() => getPath(screens), [screens])
-
-    const positionStyle = useMemo<CSSProperties>(() => ({
-        transform: `translate(${-windowDetails.sX}px, ${-windowDetails.sY}px)`,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: windowDetails.sW,
-        height: windowDetails.sH,
-    }), [windowDetails.sH, windowDetails.sW, windowDetails.sX, windowDetails.sY]);
 
     const updateWindowDetails = useCallback(() => {
         const details = getWindowDetails()
@@ -54,8 +46,6 @@ const App = () => {
     }, [handleUnload]);
 
     useEffect(() => {
-        updateWindowDetails();
-
         const windowDetailsIntervalId = setInterval(() => requestAnimationFrame(updateWindowDetails), INTERVAL);
 
         return () => {
@@ -63,29 +53,25 @@ const App = () => {
         };
     }, [updateWindowDetails])
 
-    const svgStyle = useMemo<CSSProperties>(() => ({
-        ...positionStyle,
-        backgroundColor: 'transparent',
-        overflow: 'hidden',
-    }), [positionStyle]);
-
-    const imageStyle = useMemo<CSSProperties>(() => ({
-        ...positionStyle,
-        zIndex: -1,
-        objectFit: 'cover',
-    }), [positionStyle]);
-
     return (
         <>
-            <svg style={svgStyle} viewBox={`0 0 ${windowDetails.sW} ${windowDetails.sH}`}>
+            <style>{`
+            :root {
+                --screen-width: ${windowDetails.sW}px;
+                --screen-height: ${windowDetails.sH}px;
+                --screen-x: ${-windowDetails.sX}px;
+                --screen-y: ${-windowDetails.sY}px;
+            }
+            `}</style>
+            <svg className="polygon" viewBox={`0 0 ${windowDetails.sW} ${windowDetails.sH}`}>
                 <path d={path} stroke="yellow" strokeWidth="3" fill="transparent"/>
             </svg>
-            <img src="https://picsum.photos/id/10/1920/1080" style={imageStyle} alt="" />
+            <img className="background" src="https://picsum.photos/id/10/1920/1080" alt="" />
         </>
     );
 };
 
-export default App;
+export default Index;
 
 function getPath(screens = getScreens()) {
     return screens

@@ -1,0 +1,28 @@
+:root {
+    --screen-width: 0;
+    --screen-height: 0;
+    --screen-x: 0;
+    --screen-y: 0;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    object-fit: cover;
+    transform: translate(var(--screen-x), var(--screen-y));
+    width: var(--screen-width);
+    height: var(--screen-height);
+}
+
+.polygon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    overflow: hidden;
+    transform: translate(var(--screen-x), var(--screen-y));
+    width: var(--screen-width);
+    height: var(--screen-height);
+}
