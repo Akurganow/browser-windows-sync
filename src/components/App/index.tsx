@@ -1,126 +1,15 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
-import './styles.css'
+import React from 'react';
+import { WindowManager } from '../WindowManager';
 
-type WindowDetails = {
-    sX: number;
-    sY: number;
-    sW: number;
-    sH: number;
-    w: number;
-    h: number;
-}
-
-type Screen = [string, WindowDetails]
-
-const INTERVAL = 16;
-const STORAGE_PREFIX = 'screenId';
-
-/**
- * The Index component is a React component that creates a shared space across multiple windows.
- * Each window is represented as a vertex of a polygon, and the polygon is drawn across all windows.
- * The component uses local storage to keep track of all open windows and their details.
- */
-const Index = () => {
-    const [windowDetails, setWindowDetails] = useState(getWindowDetails());
-    const screenId = useMemo(() => `${STORAGE_PREFIX}${getScreenId()}`, [])
-    const screens = useMemo(() => {
-        const screens = getScreens().filter(([key]) => key !== screenId)
-        const currentScreen = [screenId, windowDetails] as Screen
-
-        return [currentScreen, ...screens]
-    }, [screenId, windowDetails])
-    const path = useMemo(() => getPath(screens), [screens])
-
-    const updateWindowDetails = useCallback(() => {
-        const details = getWindowDetails()
-
-        setWindowDetails(details)
-        window.localStorage.setItem(screenId, JSON.stringify(details))
-    }, [screenId])
-
-    const handleUnload = useCallback(() => {
-        window.localStorage.removeItem(screenId);
-    }, [screenId])
-
-    useEffect(() => {
-        window.addEventListener('beforeunload', handleUnload);
-
-        return () => {
-            window.removeEventListener('beforeunload', handleUnload);
-        };
-    }, [handleUnload]);
-
-    useEffect(() => {
-        const windowDetailsIntervalId = setInterval(() => requestAnimationFrame(updateWindowDetails), INTERVAL);
-
-        return () => {
-            clearInterval(windowDetailsIntervalId);
-        };
-    }, [updateWindowDetails])
-
-    return (
-        <>
-            <style>{`
-            :root {
-                --screen-width: ${windowDetails.sW}px;
-                --screen-height: ${windowDetails.sH}px;
-                --screen-x: ${-windowDetails.sX}px;
-                --screen-y: ${-windowDetails.sY}px;
-            }
-            `}</style>
-            <svg className="polygon" viewBox={`0 0 ${windowDetails.sW} ${windowDetails.sH}`}>
-                <path d={path} stroke="yellow" strokeWidth="3" fill="transparent"/>
-            </svg>
-            <img className="background" src="https://picsum.photos/id/10/1920/1080" alt="" />
-        </>
-    );
+const App: React.FC = () => {
+  return (
+    <WindowManager
+      showDebugPanel={true}
+      debugPanelPosition="top-left"
+      strokeColor="black"
+      strokeWidth={3}
+    />
+  );
 };
 
-export default Index;
-
-function getPath(screens = getScreens()) {
-    return screens
-        .map(([_key, screen]) => {
-            const x = screen.sX + screen.w / 2;
-            const y = screen.sY + screen.h / 2;
-            return { x, y };
-        })
-        .reduce((acc, point, i) => {
-            return acc + (i === 0 ? `M${point.x},${point.y}` : ` L${point.x},${point.y}`);
-        }, '') + ' Z'
-}
-
-function getWindowDetails(): WindowDetails {
-    return {
-        sX: window.screenX,
-        sY: window.screenY,
-        sW: window.screen.availWidth,
-        sH: window.screen.availHeight,
-        w: window.outerWidth,
-        h: window.innerHeight,
-    };
-}
-
-function getScreens(): Screen[] {
-    return Object.entries(window.localStorage)
-        .filter(([key]) => key.startsWith(STORAGE_PREFIX))
-        .map(([key, value]) => [key, JSON.parse(value)]);
-}
-
-function getScreenId() {
-    const existingScreenId = sessionStorage.getItem(STORAGE_PREFIX);
-
-    if (existingScreenId) {
-        return parseInt(existingScreenId.replace(STORAGE_PREFIX, ''), 10);
-    }
-
-    const existingScreens = Object.keys(window.localStorage)
-        .filter(key => key.startsWith(STORAGE_PREFIX))
-        .map(key => parseInt(key.replace(STORAGE_PREFIX, ''), 10))
-
-    const newScreenId = existingScreens.length > 0 ? Math.max(...existingScreens) + 1 : 0;
-
-    sessionStorage.setItem(STORAGE_PREFIX, `${STORAGE_PREFIX}${newScreenId}`);
-
-    return newScreenId
-}
+export default App;

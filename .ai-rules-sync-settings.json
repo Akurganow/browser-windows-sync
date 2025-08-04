@@ -1,0 +1,29 @@
+{
+    "sourceDir": ".rules",
+    "logging": {
+        "level": "debug"
+    },
+    "cursor": {
+        "enabled": true
+    },
+    "junie": {
+        "enabled": true
+    },
+    "claude": {
+        "enabled": true
+    },
+    "copilot-instructions": {
+        "enabled": false,
+        "mode": "single-file",
+        "template": "junie",
+        "output": ".github/copilot-instructions.md",
+        "filenameTemplate": "copilot-instructions.md"
+    },
+    "copilot": {
+        "enabled": true,
+        "mode": "per-file",
+        "template": "cursor",
+        "output": ".github/instructions",
+        "filenameTemplate": "{{id}}.instructions.md"
+    }
+}
