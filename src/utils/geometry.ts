@@ -24,7 +24,7 @@ export class GeometryUtils {
   }
 
   /**
-   * Создает SVG путь для текущего окна - только линии к двум соседним окнам в полигоне
+   * Создает SVG путь для текущего окна - полная внешняя граница полигона в глобальных координатах
    */
   static calculateWindowPath(screens: Screen[], currentWindowId: string): string {
     if (screens.length === 1) {
@@ -36,58 +36,19 @@ export class GeometryUtils {
       return '';
     }
 
-    const [, currentWindowDetails] = currentScreen;
-    
-    // Центр текущего окна в его собственных локальных координатах
-    const currentCenterLocal = CoordinateSystem.getLocalWindowCenter(currentWindowDetails);
-
-    // Используем диагональ ОКНА, т.к. ViewBox теперь равен размеру окна
-    const windowDiagonal = Math.sqrt(
-      currentWindowDetails.windowWidth * currentWindowDetails.windowWidth +
-      currentWindowDetails.windowHeight * currentWindowDetails.windowHeight
+    // Получаем все точки полигона в глобальных координатах
+    const globalPoints = screens.map(([, windowDetails]) => 
+      CoordinateSystem.getWindowCenter(windowDetails)
     );
 
-    // Получаем только двух соседних окон в полигоне
-    const neighborScreens = GeometryUtils.getTwoNeighborWindows(screens, currentWindowId);
-    
-    if (neighborScreens.length === 0) {
-      // Для одного окна ничего не рисуем в этом режиме
-      return '';
-    }
+    // Сортируем точки для создания правильного полигона
+    const sortedGlobalPoints = GeometryUtils.sortPointsForPolygon(globalPoints);
 
-    // Создаем линии от текущего окна к двум соседним окнам
-    const createLine = ([, otherWindowDetails]: Screen) => {
-      // Глобальные координаты центра другого окна
-      const targetCenterGlobal = CoordinateSystem.getWindowCenter(otherWindowDetails);
-      
-      // Преобразуем глобальные координаты цели в локальные координаты текущего окна
-      const targetCenterLocal = CoordinateSystem.globalToLocal(targetCenterGlobal, currentWindowDetails);
-      
-      // Вычисляем направление от локального центра к локальной цели
-      const dx = targetCenterLocal.x - currentCenterLocal.x;
-      const dy = targetCenterLocal.y - currentCenterLocal.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      // Если окна почти в одной точке, рисуем луч в случайном направлении
-      if (distance < 1) {
-        const randomAngle = Math.random() * 2 * Math.PI;
-        const endX = currentCenterLocal.x + Math.cos(randomAngle) * windowDiagonal;
-        const endY = currentCenterLocal.y + Math.sin(randomAngle) * windowDiagonal;
-        return `M${currentCenterLocal.x},${currentCenterLocal.y} L${endX},${endY}`;
-      }
-      
-      // Нормализуем направление и умножаем на диагональ окна
-      const normalizedX = dx / distance;
-      const normalizedY = dy / distance;
-      const endX = currentCenterLocal.x + normalizedX * windowDiagonal;
-      const endY = currentCenterLocal.y + normalizedY * windowDiagonal;
-      
-      return `M${currentCenterLocal.x},${currentCenterLocal.y} L${endX},${endY}`;
-    };
-
-    const lines = R.map(createLine, neighborScreens);
-
-    return lines.join(' ');
+    // Создаем полный полигон из глобальных точек (все окна будут рисовать одинаковый полигон)
+    return sortedGlobalPoints
+      .reduce((acc, point, i) => {
+        return acc + (i === 0 ? `M${point.x},${point.y}` : ` L${point.x},${point.y}`);
+      }, '') + ' Z';
   }
 
 
@@ -201,54 +162,6 @@ export class GeometryUtils {
     // В будущем можно улучшить алгоритм для поиска реальных соседей
     return GeometryUtils.sortPointsForPolygon(centers);
   }
-
-  /**
-   * Находит только двух соседних окон для текущего окна в полигоне
-   */
-  static getTwoNeighborWindows(screens: Screen[], currentWindowId: string): Screen[] {
-    if (screens.length <= 2) {
-      return R.filter(([id]) => id !== currentWindowId, screens);
-    }
-
-    // Создаем массив центров с привязкой к исходным экранам
-    const screensWithCenters = R.map(
-      (screen: Screen) => {
-        const [id, windowDetails] = screen;
-        const center = CoordinateSystem.getWindowCenter(windowDetails);
-        return { screen, center, id };
-      },
-      screens
-    );
-
-    // Сортируем по углу для создания правильного полигона
-    const centroid = GeometryUtils.getCentroid(R.map(R.prop('center'), screensWithCenters));
-    
-    const sortedScreens = R.sort(
-      (a, b) => {
-        const angleA = Math.atan2(a.center.y - centroid.y, a.center.x - centroid.x);
-        const angleB = Math.atan2(b.center.y - centroid.y, b.center.x - centroid.x);
-        return angleA - angleB;
-      },
-      screensWithCenters
-    );
-
-    // Находим индекс текущего окна в отсортированном массиве
-    const currentIndex = sortedScreens.findIndex(item => item.id === currentWindowId);
-    
-    if (currentIndex === -1) {
-      return [];
-    }
-
-    // Находим предыдущего и следующего соседа (с циклическим переходом)
-    const prevIndex = (currentIndex - 1 + sortedScreens.length) % sortedScreens.length;
-    const nextIndex = (currentIndex + 1) % sortedScreens.length;
-
-    return [
-      sortedScreens[prevIndex].screen,
-      sortedScreens[nextIndex].screen
-    ];
-  }
-
 
   /**
    * Проверяет, пересекаются ли два прямоугольника

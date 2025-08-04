@@ -19,9 +19,40 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
 }) => {
   const positionClass = `debug-panel--${position}`;
 
+  const copyAllDebugInfo = () => {
+    const debugInfo = [
+      '=== DEBUG INFORMATION ===',
+      '',
+      '--- Window Details ---',
+      windowDetails ? [
+        `Screen Position: (${windowDetails.screenX}, ${windowDetails.screenY})`,
+        `Window Size: ${windowDetails.windowWidth} × ${windowDetails.windowHeight}`,
+        `Screen Size: ${windowDetails.screenWidth} × ${windowDetails.screenHeight}`
+      ].join('\n') : 'No window details available',
+      '',
+      '--- Screen Information ---',
+      `Screen Count: ${screenCount}`,
+      `ViewBox: ${viewBox}`,
+      '',
+      '--- Polygon Path ---',
+      path || 'No path generated'
+    ].join('\n');
+    
+    navigator.clipboard.writeText(debugInfo);
+  };
+
   return (
     <div className={`debug-panel ${positionClass}`}>
-      <h3>Debug Information</h3>
+      <div className="debug-panel-header">
+        <h3>Debug Information</h3>
+        <button 
+          className="copy-button copy-button--main"
+          onClick={copyAllDebugInfo}
+          title="Copy all debug information"
+        >
+          Copy All
+        </button>
+      </div>
       
       <div className="debug-section">
         <h4>Window Details</h4>
@@ -43,18 +74,7 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
       </div>
 
       <div className="debug-section">
-        <div className="debug-section-header">
-          <h4>Polygon Path</h4>
-          {path && (
-            <button 
-              className="copy-button"
-              onClick={() => navigator.clipboard.writeText(path)}
-              title="Copy path to clipboard"
-            >
-              Copy
-            </button>
-          )}
-        </div>
+        <h4>Polygon Path</h4>
         <div className="debug-path">
           <code>{path || 'No path generated'}</code>
         </div>

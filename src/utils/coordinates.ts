@@ -30,18 +30,8 @@ export class CoordinateSystem {
    */
   static getWindowCenter(windowDetails: WindowDetails): Point {
     return {
-      x: windowDetails.screenX + windowDetails.windowWidth / 2,
-      y: windowDetails.screenY + windowDetails.windowHeight / 2,
-    };
-  }
-
-  /**
-   * Получает центр окна в локальных координатах
-   */
-  static getLocalWindowCenter(windowDetails: WindowDetails): Point {
-    return {
-      x: windowDetails.windowWidth / 2,
-      y: windowDetails.windowHeight / 2,
+      x: Math.round(windowDetails.screenX + windowDetails.windowWidth / 2),
+      y: Math.round(windowDetails.screenY + windowDetails.windowHeight / 2),
     };
   }
 

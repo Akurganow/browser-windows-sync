@@ -157,8 +157,9 @@ export class ScreenApiManager {
     }
 
     // Находим экран, на котором находится текущее окно
-    const windowX = window.screenX;
-    const windowY = window.screenY;
+    const windowDetails = await ScreenApiManager.getWindowDetails();
+    const windowX = windowDetails.screenX;
+    const windowY = windowDetails.screenY;
 
     const currentScreen = screenDetails.screens.find(screen => 
       windowX >= screen.left && 
