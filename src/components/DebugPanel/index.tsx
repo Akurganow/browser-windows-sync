@@ -43,7 +43,18 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
       </div>
 
       <div className="debug-section">
-        <h4>Polygon Path</h4>
+        <div className="debug-section-header">
+          <h4>Polygon Path</h4>
+          {path && (
+            <button 
+              className="copy-button"
+              onClick={() => navigator.clipboard.writeText(path)}
+              title="Copy path to clipboard"
+            >
+              Copy
+            </button>
+          )}
+        </div>
         <div className="debug-path">
           <code>{path || 'No path generated'}</code>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { WindowDetails } from '../../types/window';
 import './styles.css';
+import '../../background.css';
 
 interface BackgroundLayerProps {
   windowDetails: WindowDetails | null;
@@ -10,7 +11,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   windowDetails
 }) => {
   return (
-    <div className="background-layer">
+    <div className="background-layer background-pattern">
       {windowDetails && (
         <div 
           className="background-layer__window-outline"
