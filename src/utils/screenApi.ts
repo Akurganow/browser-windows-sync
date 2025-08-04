@@ -121,8 +121,9 @@ export class ScreenApiManager {
       screenY: window.screenY - bounds.minY,
       screenWidth: bounds.totalWidth,
       screenHeight: bounds.totalHeight,
-      windowWidth: window.outerWidth,
-      windowHeight: window.outerHeight,
+      // Используем innerWidth/innerHeight, чтобы работать с размерами области отображения без рамок браузера
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
     };
   }
 

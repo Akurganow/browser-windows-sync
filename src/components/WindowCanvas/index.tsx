@@ -23,7 +23,7 @@ export const WindowCanvas: React.FC<WindowCanvasProps> = ({
       <svg
         className="window-canvas__svg"
         viewBox={viewBox}
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
       >
         <path
           d={path}

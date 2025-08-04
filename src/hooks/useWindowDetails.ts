@@ -92,14 +92,20 @@ export const useWindowDetails = () => {
     updateWindowDetails();
   }, [updateWindowDetails]);
 
-  // Настройка принудительного обновления каждую миллисекунду для демо
+  // Плавное обновление через requestAnimationFrame
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    let frameId: number;
+
+    const loop = () => {
       updateWindowDetails();
-    }, 1); // Обновление каждую миллисекунду
+      frameId = requestAnimationFrame(loop);
+    };
+
+    // Запускаем цикл
+    frameId = requestAnimationFrame(loop);
 
     return () => {
-      clearInterval(intervalId);
+      cancelAnimationFrame(frameId);
     };
   }, [updateWindowDetails]);
 
