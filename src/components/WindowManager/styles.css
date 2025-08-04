@@ -1,0 +1,58 @@
+.window-manager {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.window-manager--loading,
+.window-manager--error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.window-manager__loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.window-manager__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #00ff00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.window-manager__error {
+  text-align: center;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 500px;
+  padding: 32px;
+}
+
+.window-manager__error h3 {
+  color: #ff4444;
+  margin: 0 0 16px 0;
+  font-size: 24px;
+}
+
+.window-manager__error p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.8;
+}

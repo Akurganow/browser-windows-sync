@@ -1,0 +1,76 @@
+.debug-panel {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
+  border: 1px solid #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.debug-panel--top-left {
+  top: 16px;
+  left: 16px;
+}
+
+.debug-panel--top-right {
+  top: 16px;
+  right: 16px;
+}
+
+.debug-panel--bottom-left {
+  bottom: 16px;
+  left: 16px;
+}
+
+.debug-panel--bottom-right {
+  bottom: 16px;
+  right: 16px;
+}
+
+.debug-panel h3 {
+  margin: 0 0 16px 0;
+  color: #00ff00;
+  font-size: 14px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+}
+
+.debug-panel h4 {
+  margin: 16px 0 8px 0;
+  color: #ffff00;
+  font-size: 12px;
+}
+
+.debug-section {
+  margin-bottom: 16px;
+}
+
+.debug-info p {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+.debug-info strong {
+  color: #00ffff;
+}
+
+.debug-path {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.debug-path code {
+  word-break: break-all;
+  font-size: 10px;
+  line-height: 1.3;
+  color: #ff00ff;
+}
