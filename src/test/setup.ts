@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 
 // Mock для Screen Management API
 Object.defineProperty(window, 'getScreenDetails', {
   writable: true,
-  value: jest.fn().mockResolvedValue({
+  value: vi.fn().mockResolvedValue({
     screens: [
       {
         left: 0,
@@ -20,20 +21,20 @@ const createInMemoryStorage = () => {
   const store = new Map<string, string>();
   
   return {
-    getItem: jest.fn((key: string) => store.get(key) || null),
-    setItem: jest.fn((key: string, value: string) => {
+    getItem: vi.fn((key: string) => store.get(key) || null),
+    setItem: vi.fn((key: string, value: string) => {
       store.set(key, value);
     }),
-    removeItem: jest.fn((key: string) => {
+    removeItem: vi.fn((key: string) => {
       store.delete(key);
     }),
-    clear: jest.fn(() => {
+    clear: vi.fn(() => {
       store.clear();
     }),
     get length() {
       return store.size;
     },
-    key: jest.fn((index: number) => {
+    key: vi.fn((index: number) => {
       const keys = Array.from(store.keys());
       return keys[index] || null;
     })
@@ -53,7 +54,7 @@ Object.defineProperty(window, 'sessionStorage', {
 // Mock для crypto.randomUUID
 Object.defineProperty(window, 'crypto', {
   value: {
-    randomUUID: jest.fn(() => 'mock-uuid-' + Math.random().toString(36).substr(2, 9))
+    randomUUID: vi.fn(() => 'mock-uuid-' + Math.random().toString(36).substr(2, 9))
   }
 });
 

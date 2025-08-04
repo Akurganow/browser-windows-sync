@@ -2,7 +2,7 @@ import type { Point, Polygon, Rectangle, Bounds } from '../types/geometry';
 import type { WindowState, Screen } from '../types/window';
 import { WINDOW_CONSTANTS } from '../types/window';
 import { CoordinateSystem } from './coordinates';
-import _ from 'lodash';
+import * as R from 'ramda';
 
 /**
  * Утилиты для геометрических расчетов и создания SVG путей
@@ -85,7 +85,7 @@ export class GeometryUtils {
       return `M${currentCenterLocal.x},${currentCenterLocal.y} L${endX},${endY}`;
     };
 
-    const lines = _.map(neighborScreens, createLine);
+    const lines = R.map(createLine, neighborScreens);
 
     return lines.join(' ');
   }
@@ -207,23 +207,30 @@ export class GeometryUtils {
    */
   static getTwoNeighborWindows(screens: Screen[], currentWindowId: string): Screen[] {
     if (screens.length <= 2) {
-      return _.filter(screens, ([id]) => id !== currentWindowId);
+      return R.filter(([id]) => id !== currentWindowId, screens);
     }
 
     // Создаем массив центров с привязкой к исходным экранам
-    const screensWithCenters = _.map(screens, (screen: Screen) => {
+    const screensWithCenters = R.map(
+      (screen: Screen) => {
         const [id, windowDetails] = screen;
         const center = CoordinateSystem.getWindowCenter(windowDetails);
         return { screen, center, id };
-      }
+      },
+      screens
     );
 
     // Сортируем по углу для создания правильного полигона
-    const centroid = GeometryUtils.getCentroid(_.map(screensWithCenters, 'center'));
+    const centroid = GeometryUtils.getCentroid(R.map(R.prop('center'), screensWithCenters));
     
-    const sortedScreens = _.sortBy(screensWithCenters, (item) => {
-      return Math.atan2(item.center.y - centroid.y, item.center.x - centroid.x);
-    });
+    const sortedScreens = R.sort(
+      (a, b) => {
+        const angleA = Math.atan2(a.center.y - centroid.y, a.center.x - centroid.x);
+        const angleB = Math.atan2(b.center.y - centroid.y, b.center.x - centroid.x);
+        return angleA - angleB;
+      },
+      screensWithCenters
+    );
 
     // Находим индекс текущего окна в отсортированном массиве
     const currentIndex = sortedScreens.findIndex(item => item.id === currentWindowId);
