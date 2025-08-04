@@ -91,9 +91,9 @@ export const useWindowStore = create<WindowStore>()(
             
             // Объединяем текущие данные с входящими, приоритет у входящих данных
             const mergedWindows = new Map(currentAllWindows);
-            for (const [windowId, windowDetails] of incomingWindows) {
+            incomingWindows.forEach((windowDetails, windowId) => {
               mergedWindows.set(windowId, windowDetails);
-            }
+            });
             
             set({ allWindows: mergedWindows });
           },
