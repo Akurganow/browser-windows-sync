@@ -89,13 +89,13 @@ flowchart TD
     H --> J
     H --> K
     
-    style A fill:#e1f5fe
-    style B fill:#e1f5fe
-    style C fill:#e1f5fe
-    style H fill:#c8e6c9
-    style I fill:#fff3e0
-    style J fill:#fff3e0
-    style K fill:#fff3e0
+    style A fill:#e1f5fe,color:#000000
+    style B fill:#e1f5fe,color:#000000
+    style C fill:#e1f5fe,color:#000000
+    style H fill:#c8e6c9,color:#000000
+    style I fill:#fff3e0,color:#000000
+    style J fill:#fff3e0,color:#000000
+    style K fill:#fff3e0,color:#000000
 ```
 
 #### Coordinate Transformation Process:
@@ -111,6 +111,7 @@ flowchart TD
 The application uses the Broadcast Channel API for real-time synchronization between windows:
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#f0f0f0', 'tertiaryColor': '#ffffff', 'background': '#ffffff', 'mainBkg': '#ffffff', 'secondBkg': '#f0f0f0', 'tertiaryBkg': '#ffffff'}}}%%
 sequenceDiagram
     participant W1 as Window 1
     participant BC as Broadcast Channel
