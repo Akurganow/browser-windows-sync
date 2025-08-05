@@ -1,0 +1,70 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Renovate configuration for browser-windows-sync",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":dependencyDashboard"
+  ],
+  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+  "timezone": "UTC",
+  "labels": ["dependencies"],
+  "assignees": ["Akurganow"],
+  "reviewers": ["Akurganow"],
+  "packageRules": [
+    {
+      "groupName": "React ecosystem",
+      "matchPackagePatterns": ["^react", "^@types/react"],
+      "reviewersFromCodeOwners": true,
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "groupName": "TypeScript",
+      "matchPackageNames": ["typescript", "@types/node"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "groupName": "Testing libraries",
+      "matchPackagePatterns": ["^@testing-library", "^vitest", "^@vitest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "groupName": "Build tools",
+      "matchPackagePatterns": ["^vite", "^@vitejs"],
+      "minimumReleaseAge": "5 days"
+    },
+    {
+      "groupName": "Development dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "excludePackagePatterns": ["^react", "^typescript", "^vite"]
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "pr"
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 5am on monday"]
+  },
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "branchConcurrentLimit": 10,
+  "platformAutomerge": true
+}

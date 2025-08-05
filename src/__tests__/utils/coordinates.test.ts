@@ -6,8 +6,8 @@ describe('GeometryUtils', () => {
   describe('calculateWindowPath', () => {
     it('should return empty string for non-existent window', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }],
-        ['window2', { screenX: 800, screenY: 0, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }],
+        ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const result = GeometryUtils.calculateWindowPath(screens, 'non-existent');
@@ -16,7 +16,7 @@ describe('GeometryUtils', () => {
 
     it('should return single window path for one screen', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 800, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const result = GeometryUtils.calculateWindowPath(screens, 'window1');
@@ -26,9 +26,9 @@ describe('GeometryUtils', () => {
 
     it('should return full polygon path for multiple screens', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }],
-        ['window2', { screenX: 800, screenY: 0, windowWidth: 800, windowHeight: 600 }],
-        ['window3', { screenX: 400, screenY: 600, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 1600, screenHeight: 1200, windowWidth: 800, windowHeight: 600 }],
+        ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 1200, windowWidth: 800, windowHeight: 600 }],
+        ['window3', { screenX: 400, screenY: 600, screenWidth: 1600, screenHeight: 1200, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const result = GeometryUtils.calculateWindowPath(screens, 'window1');
@@ -44,8 +44,8 @@ describe('GeometryUtils', () => {
 
     it('should create identical paths for all windows in same screen set', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }],
-        ['window2', { screenX: 800, screenY: 0, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }],
+        ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const path1 = GeometryUtils.calculateWindowPath(screens, 'window1');
@@ -70,7 +70,7 @@ describe('GeometryUtils', () => {
 
     it('should return single window path for one screen', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 800, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const result = GeometryUtils.calculatePolygonPath(screens);
@@ -80,8 +80,8 @@ describe('GeometryUtils', () => {
 
     it('should return polygon path for multiple screens', () => {
       const screens: Screen[] = [
-        ['window1', { screenX: 0, screenY: 0, windowWidth: 800, windowHeight: 600 }],
-        ['window2', { screenX: 800, screenY: 0, windowWidth: 800, windowHeight: 600 }]
+        ['window1', { screenX: 0, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }],
+        ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
       const result = GeometryUtils.calculatePolygonPath(screens);
