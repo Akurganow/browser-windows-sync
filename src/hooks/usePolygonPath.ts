@@ -9,7 +9,12 @@ import { CoordinateSystem } from '../utils/coordinates';
 export const usePolygonPath = (
   screens: Screen[], 
   currentWindowId?: string
-) => {
+): {
+  path: string;
+  polygon: string;
+  viewBox: string;
+  screenCount: number;
+} => {
   const path = useMemo(() => {
     if (currentWindowId) {
       return GeometryUtils.calculateWindowPath(screens, currentWindowId);

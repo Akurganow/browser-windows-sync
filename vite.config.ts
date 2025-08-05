@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react-swc'
 
 export default defineConfig({
@@ -15,7 +15,6 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
-  // @ts-ignore
   test: {
     globals: true,
     watch: false,

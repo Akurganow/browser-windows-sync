@@ -13,6 +13,7 @@ export const useScreenManager = (windowDetails: WindowDetails) => {
     updateCurrentWindow,
     getScreens,
     removeWindow,
+    loadAllWindows,
   } = useWindowStore();
 
   // Инициализация store при первом запуске
@@ -53,6 +54,6 @@ export const useScreenManager = (windowDetails: WindowDetails) => {
     screens,
     otherScreens,
     screenId: currentWindowId,
-    updateOtherScreens: () => useWindowStore.getState().loadAllWindows(),
+    updateOtherScreens: loadAllWindows,
   };
 };

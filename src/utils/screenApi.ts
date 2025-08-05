@@ -161,13 +161,18 @@ export class ScreenApiManager {
     const windowDetails = await ScreenApiManager.getWindowDetails();
     const windowX = windowDetails.screenX;
     const windowY = windowDetails.screenY;
+    
+    // Получаем bounds для корректного сравнения координат
+    const bounds = ScreenApiManager.calculateScreenBounds(screenDetails.screens);
 
-    const currentScreen = screenDetails.screens.find(screen => 
-      windowX >= screen.left && 
-      windowX < screen.left + screen.availWidth &&
-      windowY >= screen.top && 
-      windowY < screen.top + screen.availHeight
-    );
+    const currentScreen = screenDetails.screens.find(screen => {
+      const adjustedScreenLeft = screen.left - bounds.minX;
+      const adjustedScreenTop = screen.top - bounds.minY;
+      return windowX >= adjustedScreenLeft && 
+             windowX < adjustedScreenLeft + screen.availWidth &&
+             windowY >= adjustedScreenTop && 
+             windowY < adjustedScreenTop + screen.availHeight;
+    });
 
     if (!currentScreen) {
       return null;

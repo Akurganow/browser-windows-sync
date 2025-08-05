@@ -4,7 +4,7 @@ import { WindowManager } from '../WindowManager';
 const App: React.FC = () => {
   return (
     <WindowManager
-      showDebugPanel={true}
+      showDebugPanel={false}
       debugPanelPosition="top-left"
       strokeColor="black"
       strokeWidth={3}
