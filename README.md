@@ -169,7 +169,7 @@ sequenceDiagram
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/Akurganow/fun-windows.git
 cd fun-windows
 
 # Install dependencies
