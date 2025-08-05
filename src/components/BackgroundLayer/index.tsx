@@ -21,8 +21,7 @@ export const BackgroundLayer = React.memo<BackgroundLayerProps>(({
         <div 
           className="background-layer__window-outline"
           style={{
-            left: windowDetails.screenX,
-            top: windowDetails.screenY,
+            transform: `translate3d(${windowDetails.screenX}px, ${windowDetails.screenY}px, 0)`,
             width: windowDetails.windowWidth,
             height: windowDetails.windowHeight,
             opacity: 0.3
