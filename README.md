@@ -168,8 +168,8 @@ sequenceDiagram
 
 ```bash
 # Clone the repository
-git clone https://github.com/Akurganow/fun-windows.git
-cd fun-windows
+git clone https://github.com/Akurganow/browser-windows-sync.git
+cd browser-windows-sync
 
 # Install dependencies
 npm install

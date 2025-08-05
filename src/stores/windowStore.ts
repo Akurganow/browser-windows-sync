@@ -79,7 +79,7 @@ export const useWindowStore = create<WindowStore>()(
 
         // Инициализируем синхронизацию между окнами через BroadcastChannel
         windowSync = createBroadcastSync({
-          channelName: 'fun-windows-sync',
+          channelName: 'browser-windows-sync',
           readState: () => get().allWindows,
           applyState: (newAllWindows) => {
             const { allWindows: currentAllWindows } = get();
