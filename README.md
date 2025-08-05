@@ -111,7 +111,7 @@ flowchart TD
 The application uses the Broadcast Channel API for real-time synchronization between windows:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#666', 'primaryBorderColor': '#666', 'lineColor': '#666', 'secondaryColor': '#f0f0f0', 'tertiaryColor': '#ffffff', 'background': '#ffffff', 'mainBkg': '#ffffff', 'secondBkg': '#f0f0f0', 'tertiaryBkg': '#ffffff'}}}%%
+%%{init: {'theme':'base'}}%%
 sequenceDiagram
     participant W1 as Window 1
     participant BC as Broadcast Channel
