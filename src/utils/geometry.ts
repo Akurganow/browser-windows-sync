@@ -2,15 +2,8 @@ import type { Point, Polygon, Rectangle, Bounds } from '../types/geometry';
 import type { WindowState, Screen } from '../types/window';
 import { WINDOW_CONSTANTS } from '../types/window';
 import { CoordinateSystem } from './coordinates';
-import * as R from 'ramda';
 
-/**
- * Утилиты для геометрических расчетов и создания SVG путей
- */
 export class GeometryUtils {
-  /**
-   * Создает SVG путь для полигона из массива экранов
-   */
   static calculatePolygonPath(screens: Screen[]): string {
     if (screens.length === 0) {
       return '';
@@ -23,9 +16,6 @@ export class GeometryUtils {
     return GeometryUtils.createMultiWindowPath(screens);
   }
 
-  /**
-   * Создает SVG путь для текущего окна - полная внешняя граница полигона в глобальных координатах
-   */
   static calculateWindowPath(screens: Screen[], currentWindowId: string): string {
     if (screens.length === 1) {
       return GeometryUtils.createSingleWindowPath(screens[0]);
@@ -36,15 +26,12 @@ export class GeometryUtils {
       return '';
     }
 
-    // Получаем все точки полигона в глобальных координатах
     const globalPoints = screens.map(([, windowDetails]) => 
       CoordinateSystem.getWindowCenter(windowDetails)
     );
 
-    // Сортируем точки для создания правильного полигона
     const sortedGlobalPoints = GeometryUtils.sortPointsForPolygon(globalPoints);
 
-    // Создаем полный полигон из глобальных точек (все окна будут рисовать одинаковый полигон)
     return sortedGlobalPoints
       .reduce((acc, point, i) => {
         return acc + (i === 0 ? `M${point.x},${point.y}` : ` L${point.x},${point.y}`);
@@ -52,9 +39,6 @@ export class GeometryUtils {
   }
 
 
-  /**
-   * Создает путь для одного окна (маленький круг)
-   */
   private static createSingleWindowPath(screen: Screen): string {
     const [, windowDetails] = screen;
     const center = CoordinateSystem.getWindowCenter(windowDetails);
@@ -63,15 +47,11 @@ export class GeometryUtils {
     return GeometryUtils.createCirclePath(center, radius);
   }
 
-  /**
-   * Создает путь для множественных окон (соединяющий полигон)
-   */
   private static createMultiWindowPath(screens: Screen[]): string {
     const points = screens.map(([, windowDetails]) => 
       CoordinateSystem.getWindowCenter(windowDetails)
     );
 
-    // Сортируем точки для создания правильного полигона
     const sortedPoints = GeometryUtils.sortPointsForPolygon(points);
 
     return sortedPoints
@@ -80,34 +60,23 @@ export class GeometryUtils {
       }, '') + ' Z';
   }
 
-  /**
-   * Создает SVG путь для круга
-   */
   static createCirclePath(center: Point, radius: number): string {
     const { x, y } = center;
     return `M${x - radius},${y} A${radius},${radius} 0 1,1 ${x + radius},${y} A${radius},${radius} 0 1,1 ${x - radius},${y} Z`;
   }
 
-  /**
-   * Создает SVG путь для прямоугольника
-   */
   static createRectanglePath(rect: Rectangle): string {
     const { x, y, width, height } = rect;
     return `M${x},${y} L${x + width},${y} L${x + width},${y + height} L${x},${y + height} Z`;
   }
 
-  /**
-   * Сортирует точки для создания правильного полигона (по часовой стрелке) со стабильной сортировкой
-   */
   static sortPointsForPolygon(points: Point[]): Point[] {
     if (points.length <= 2) {
       return points;
     }
 
-    // Находим центр всех точек
     const center = GeometryUtils.getCentroid(points);
 
-    // Создаем массив с исходными индексами для стабильной сортировки
     return points
       .map((point, originalIndex) => ({ point, originalIndex }))
       .sort((a, b) => {
@@ -124,9 +93,6 @@ export class GeometryUtils {
       .map(({ point }) => point);
   }
 
-  /**
-   * Вычисляет центроид (геометрический центр) множества точек
-   */
   static getCentroid(points: Point[]): Point {
     if (points.length === 0) {
       return { x: 0, y: 0 };
@@ -146,9 +112,6 @@ export class GeometryUtils {
     };
   }
 
-  /**
-   * Находит соседние окна для создания правильных соединений
-   */
   static getNeighborConnections(windows: WindowState[]): Point[] {
     if (windows.length <= 1) {
       return [];
@@ -158,14 +121,9 @@ export class GeometryUtils {
       CoordinateSystem.getWindowCenter(window.details)
     );
 
-    // Для простоты соединяем все окна в порядке их расположения
-    // В будущем можно улучшить алгоритм для поиска реальных соседей
     return GeometryUtils.sortPointsForPolygon(centers);
   }
 
-  /**
-   * Проверяет, пересекаются ли два прямоугольника
-   */
   static doRectanglesIntersect(rect1: Rectangle, rect2: Rectangle): boolean {
     return !(
       rect1.x + rect1.width < rect2.x ||
@@ -175,9 +133,6 @@ export class GeometryUtils {
     );
   }
 
-  /**
-   * Вычисляет границы множества точек
-   */
   static getBounds(points: Point[]): Bounds {
     if (points.length === 0) {
       return { minX: 0, minY: 0, maxX: 0, maxY: 0 };

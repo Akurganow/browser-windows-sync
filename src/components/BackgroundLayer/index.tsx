@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { WindowDetails } from '../../types/window';
 import './styles.css';
 import '../../background.css';
@@ -7,19 +7,16 @@ interface BackgroundLayerProps {
   windowDetails: WindowDetails | null;
 }
 
-export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
+export const BackgroundLayer = React.memo<BackgroundLayerProps>(({
   windowDetails
 }) => {
-  // Устанавливаем CSS переменные для позиции фона
-  useEffect(() => {
-    if (windowDetails) {
-      document.documentElement.style.setProperty('--bg-offset-x', `${-windowDetails.screenX}px`);
-      document.documentElement.style.setProperty('--bg-offset-y', `${-windowDetails.screenY}px`);
-    }
-  }, [windowDetails]);
+  const style = useMemo(() => windowDetails ? {
+    '--bg-offset-x': `${-windowDetails.screenX}px`,
+    '--bg-offset-y': `${-windowDetails.screenY}px`,
+  } as React.CSSProperties : {}, [windowDetails]);
 
   return (
-    <div className="background-layer background-pattern">
+    <div className="background-layer background-pattern" style={style}>
       {windowDetails && (
         <div 
           className="background-layer__window-outline"
@@ -34,4 +31,4 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
       )}
     </div>
   );
-};
+});

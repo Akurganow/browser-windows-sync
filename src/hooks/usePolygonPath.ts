@@ -3,9 +3,6 @@ import type { Screen } from '../types/window';
 import { GeometryUtils } from '../utils/geometry';
 import { CoordinateSystem } from '../utils/coordinates';
 
-/**
- * Хук для расчета путей полигона с мемоизацией
- */
 export const usePolygonPath = (
   screens: Screen[], 
   currentWindowId?: string
@@ -31,14 +28,11 @@ export const usePolygonPath = (
       return '0 0 1920 1080';
     }
 
-    // Если есть currentWindowId, создаем ViewBox для области текущего окна в глобальных координатах
     if (currentWindowId) {
       const currentScreen = screens.find(([id]) => id === currentWindowId);
       if (currentScreen) {
         const [, currentWindowDetails] = currentScreen;
         
-        // ViewBox показывает только область текущего окна в глобальных координатах
-        // Это позволяет каждому окну видеть только свою часть полигона
         return `${currentWindowDetails.screenX} ${currentWindowDetails.screenY} ${currentWindowDetails.windowWidth} ${currentWindowDetails.windowHeight}`;
       }
     }

@@ -2,9 +2,6 @@ import { useEffect } from 'react';
 import type { WindowDetails } from '../types/window';
 import { useWindowStore } from '../stores/windowStore';
 
-/**
- * Хук для управления экранами через Zustand store
- */
 export const useScreenManager = (windowDetails: WindowDetails) => {
   const {
     currentWindowId,
@@ -16,14 +13,12 @@ export const useScreenManager = (windowDetails: WindowDetails) => {
     loadAllWindows,
   } = useWindowStore();
 
-  // Инициализация store при первом запуске
   useEffect(() => {
     if (!isInitialized) {
       initialize();
     }
   }, [isInitialized, initialize]);
 
-  // Обновление текущего окна при изменении detalей
   useEffect(() => {
     if (isInitialized && currentWindowId) {
       updateCurrentWindow(windowDetails);
@@ -31,7 +26,6 @@ export const useScreenManager = (windowDetails: WindowDetails) => {
   }, [isInitialized, currentWindowId, windowDetails, updateCurrentWindow]);
 
 
-  // Очистка при размонтировании
   useEffect(() => {
     const handleUnload = () => {
       if (currentWindowId) {
@@ -43,7 +37,6 @@ export const useScreenManager = (windowDetails: WindowDetails) => {
     
     return () => {
       window.removeEventListener('beforeunload', handleUnload);
-      // Не вызываем handleUnload в cleanup, так как это вызовет удаление при каждом ререндере
     };
   }, [currentWindowId, removeWindow]);
 

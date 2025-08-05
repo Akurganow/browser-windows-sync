@@ -10,7 +10,7 @@ interface DebugPanelProps {
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 }
 
-export const DebugPanel: React.FC<DebugPanelProps> = ({
+export const DebugPanel = React.memo<DebugPanelProps>(({
   windowDetails,
   path,
   screenCount,
@@ -81,4 +81,4 @@ export const DebugPanel: React.FC<DebugPanelProps> = ({
       </div>
     </div>
   );
-};
+});

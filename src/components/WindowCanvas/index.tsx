@@ -8,7 +8,7 @@ interface WindowCanvasProps {
   strokeWidth: number;
 }
 
-export const WindowCanvas: React.FC<WindowCanvasProps> = ({
+export const WindowCanvas = React.memo<WindowCanvasProps>(({
   path,
   viewBox,
   strokeColor,
@@ -37,4 +37,4 @@ export const WindowCanvas: React.FC<WindowCanvasProps> = ({
       </svg>
     </div>
   );
-};
+});
