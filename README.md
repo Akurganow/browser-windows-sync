@@ -1,57 +1,217 @@
-# Getting Started with Create React Index
+# Fun Windows - Multi-Window Polygon Demo
 
-This project is a React application that creates a shared space across multiple windows. Each window is represented as a vertex of a polygon, and the polygon is drawn across all windows. The application uses local storage to keep track of all open windows and their details.
+A React application that creates a shared visual space across multiple browser windows. Each window represents a vertex of a polygon, and the polygon is drawn across all windows, creating a synchronized multi-window experience.
 
-You can view the live application [here](https://serene-phoenix-f7789d.netlify.app/).
+🔗 **[Live Demo](https://serene-phoenix-f7789d.netlify.app/)**
 
-## How it works
+[![Application Demo](public/rec.gif)](public/rec.mp4)
 
-1. Open the application in multiple windows.
-2. Each window represents a vertex of a polygon.
-3. The polygon is drawn across all windows, creating a shared space.
-4. The application tracks the position and size of each window, updating the polygon as windows are moved or resized.
+## How It Works
 
-![Application Demo](public/rec.gif)
+The application creates a unique multi-window experience where:
+
+1. **Open multiple browser windows** of the same application
+2. **Each window becomes a vertex** of a dynamic polygon
+3. **The polygon is drawn across all windows** in real-time
+4. **Windows synchronize automatically** using the Broadcast Channel API
+5. **Move or resize windows** to see the polygon adapt dynamically
+
+### Core Concept
+
+The application treats each browser window as a point in a shared coordinate system. When you have multiple windows open, it calculates the center point of each window and connects them to form a polygon. Each window displays its portion of this polygon, creating the illusion of a shape spanning across multiple windows.
+
+## Technology Stack
+
+- **React** - UI framework
+- **TypeScript** - Type safety and better development experience
+- **Vite** - Fast build tool and development server
+- **Zustand** - Lightweight state management
+- **Ramda** - Functional programming utilities
+- **Vitest** - Testing framework
+- **Broadcast Channel API** - Cross-window communication
+
+## Architecture Overview
+
+The application follows a modular architecture with a clear separation of concerns:
+
+#### Core Components
+- **WindowManager** - Main orchestrator component
+- **WindowCanvas** - SVG rendering for polygon visualization
+- **BackgroundLayer** - Visual background effects
+- **DebugPanel** - Development and debugging information
+
+#### State Management
+- **windowStore** (Zustand) - Centralized state for all window data
+- **Broadcast synchronization** - Real-time cross-window communication
+
+#### Utilities
+- **CoordinateSystem** - Handles coordinate transformations
+- **GeometryUtils** - Polygon calculations and SVG path generation
+- **LocalSync** - Cross-window state synchronization
+
+## Coordinate System Logic
+
+The application uses a sophisticated coordinate system to handle multiple windows:
+
+```mermaid
+flowchart TD
+    subgraph "Step 1: Window Detection"
+        A[Window 1<br/>screenX: 100, screenY: 200<br/>width: 400, height: 300] 
+        B[Window 2<br/>screenX: 600, screenY: 100<br/>width: 400, height: 300]
+        C[Window 3<br/>screenX: 350, screenY: 500<br/>width: 400, height: 300]
+    end
+    
+    subgraph "Step 2: Calculate Centers"
+        D[Center 1<br/>x: 300, y: 350]
+        E[Center 2<br/>x: 800, y: 250] 
+        F[Center 3<br/>x: 550, y: 650]
+    end
+    
+    subgraph "Step 3: Create Global Polygon"
+        G[Sort Points by Angle<br/>from centroid]
+        H[Global Polygon Path<br/>M300,350 L800,250 L550,650 Z]
+    end
+    
+    subgraph "Step 4: Individual Window Rendering"
+        I[Window 1 ViewBox<br/>100,200,400,300<br/>Shows polygon portion]
+        J[Window 2 ViewBox<br/>600,100,400,300<br/>Shows polygon portion]
+        K[Window 3 ViewBox<br/>350,500,400,300<br/>Shows polygon portion]
+    end
+    
+    A --> D
+    B --> E  
+    C --> F
+    D --> G
+    E --> G
+    F --> G
+    G --> H
+    H --> I
+    H --> J
+    H --> K
+    
+    style A fill:#e1f5fe
+    style B fill:#e1f5fe
+    style C fill:#e1f5fe
+    style H fill:#c8e6c9
+    style I fill:#fff3e0
+    style J fill:#fff3e0
+    style K fill:#fff3e0
+```
+
+#### Coordinate Transformation Process:
+
+1. **Global Coordinates**: Each window reports its position on the screen (`screenX`, `screenY`)
+2. **Window Center Calculation**: Calculate the center point of each window
+3. **Polygon Formation**: Sort all center points to form a proper polygon
+4. **Local Transformation**: Each window transforms the global polygon to its local coordinate system
+5. **SVG Rendering**: Use ViewBox to show only the relevant portion in each window
+
+## Broadcast Synchronization
+
+The application uses the Broadcast Channel API for real-time synchronization between windows:
+
+```mermaid
+sequenceDiagram
+    participant W1 as Window 1
+    participant BC as Broadcast Channel
+    participant W2 as Window 2
+    participant W3 as Window 3
+    
+    Note over W1,W3: New window opens
+    W3->>BC: request-initial-state
+    W1->>BC: window-state-update (response)
+    BC->>W3: Receive initial state
+    
+    Note over W1,W3: Window moves/resizes
+    W1->>BC: window-state-update
+    BC->>W2: Sync state
+    BC->>W3: Sync state
+    
+    Note over W1,W3: Window closes
+    W2->>BC: remove-window
+    BC->>W1: Update state
+    BC->>W3: Update state
+```
+
+#### Synchronization Features:
+
+- **Initial State Request**: New windows request current state from existing windows
+- **Real-time Updates**: Window position/size changes broadcast immediately
+- **Conflict Resolution**: Prevents circular updates during state synchronization
+- **Automatic Cleanup**: Removes closed windows from shared state
+- **Timeout Handling**: Graceful fallback if no other windows respond
+
+## Key Features
+
+#### Multi-Window Coordination
+- Automatic detection of window position and size
+- Real-time synchronization across all open windows
+- Dynamic polygon recalculation when windows move or resize
+
+#### Smart Geometry
+- Intelligent point sorting for proper polygon formation
+- Smooth polygon rendering with SVG paths
+- Adaptive coordinate system for different screen configurations
+
+#### Developer Experience
+- Optional debug panel showing coordinate information
+- Comprehensive TypeScript types
+- Extensive test coverage
+- Clean, modular architecture
+
+## Getting Started
+
+#### Prerequisites
+- Node.js 16+ 
+- Modern browser with Broadcast Channel API support
+
+#### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Akurganow/fun-windows.git
+cd fun-windows
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+#### Usage
+
+1. Open the application in your browser
+2. **Open additional windows** by duplicating the tab or opening new browser windows
+3. **Position windows** around your screen to see the polygon form
+4. **Move and resize** windows to see real-time updates
+5. Enable debug panel in code to see coordinate information
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm test` - Run tests
+- `npm run test:ui` - Run tests with UI
+- `npm run type-check` - TypeScript type checking
 
-### `npm start`
+## Browser Compatibility
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Chrome/Edge**: Full support
+- **Firefox**: Full support  
+- **Safari**: Full support (iOS 15.4+)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The application requires the Broadcast Channel API, which is supported in all modern browsers.
 
-### `npm test`
+## Contributing
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-### `npm run build`
+## License
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React Index documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is open source and available under the MIT License.
