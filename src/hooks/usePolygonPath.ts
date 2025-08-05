@@ -23,7 +23,7 @@ export const usePolygonPath = (
   }, [screens, currentWindowId]);
 
   const polygon = useMemo(() => {
-    return GeometryUtils.createPolygon(screens);
+    return GeometryUtils.calculatePolygonPath(screens);
   }, [screens]);
 
   const viewBox = useMemo(() => {
