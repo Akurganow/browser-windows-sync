@@ -6,49 +6,83 @@
     ":semanticCommits",
     ":dependencyDashboard"
   ],
-  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+  "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
   "timezone": "UTC",
-  "labels": ["dependencies"],
-  "assignees": ["Akurganow"],
-  "reviewers": ["Akurganow"],
+  "labels": [
+    "dependencies"
+  ],
+  "assignees": [
+    "Akurganow"
+  ],
+  "reviewers": [
+    "Akurganow"
+  ],
   "packageRules": [
     {
       "groupName": "React ecosystem",
-      "matchPackagePatterns": ["^react", "^@types/react"],
       "reviewersFromCodeOwners": true,
-      "minimumReleaseAge": "3 days"
+      "minimumReleaseAge": "3 days",
+      "matchPackageNames": [
+        "/^react/",
+        "/^@types/react/"
+      ]
     },
     {
       "groupName": "TypeScript",
-      "matchPackageNames": ["typescript", "@types/node"],
+      "matchPackageNames": [
+        "typescript",
+        "@types/node"
+      ],
       "minimumReleaseAge": "7 days"
     },
     {
       "groupName": "Testing libraries",
-      "matchPackagePatterns": ["^@testing-library", "^vitest", "^@vitest"],
       "automerge": true,
       "automergeType": "pr",
-      "minimumReleaseAge": "3 days"
+      "minimumReleaseAge": "3 days",
+      "matchPackageNames": [
+        "/^@testing-library/",
+        "/^vitest/",
+        "/^@vitest/"
+      ]
     },
     {
       "groupName": "Build tools",
-      "matchPackagePatterns": ["^vite", "^@vitejs"],
-      "minimumReleaseAge": "5 days"
+      "minimumReleaseAge": "5 days",
+      "matchPackageNames": [
+        "/^vite/",
+        "/^@vitejs/"
+      ]
     },
     {
       "groupName": "Development dependencies",
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
       "automerge": true,
       "automergeType": "pr",
-      "excludePackagePatterns": ["^react", "^typescript", "^vite"]
+      "matchPackageNames": [
+        "!/^react/",
+        "!/^typescript/",
+        "!/^vite/"
+      ]
     },
     {
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true,
       "minimumReleaseAge": "7 days"
     },
     {
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "minimumReleaseAge": "3 days"
@@ -61,7 +95,9 @@
   },
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 5am on monday"]
+    "schedule": [
+      "before 5am on monday"
+    ]
   },
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
