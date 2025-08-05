@@ -2,8 +2,6 @@
 
 A React application that creates a shared visual space across multiple browser windows. Each window represents a vertex of a polygon, and the polygon is drawn across all windows, creating a synchronized multi-window experience.
 
-🔗 **[Live Demo](https://serene-phoenix-f7789d.netlify.app/)**
-
 [![Application Demo](public/rec.gif)](public/rec.mp4)
 
 ## How It Works
