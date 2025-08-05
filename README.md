@@ -203,6 +203,31 @@ npm run dev
 
 The application requires the Broadcast Channel API, which is supported in all modern browsers.
 
+## Dependency Management
+
+This project uses [Renovate Bot](https://docs.renovatebot.com/) for automated dependency management. The configuration is stored in `renovate.json` and includes:
+
+- **Scheduled Updates**: Dependencies are updated on weekends to minimize disruption
+- **Grouped Updates**: Related dependencies (React ecosystem, testing tools, build tools) are grouped together
+- **Auto-merge**: Patch updates and dev dependency minor updates are automatically merged after tests pass
+- **Vulnerability Alerts**: Security vulnerabilities trigger immediate updates
+- **Dependency Dashboard**: View all pending updates in a single GitHub issue
+
+### Manual Dependency Updates
+
+If you need to update dependencies manually:
+
+```bash
+# Update all dependencies to latest versions
+npm update
+
+# Update a specific package
+npm install package-name@latest
+
+# Check for outdated packages  
+npm outdated
+```
+
 ## Contributing
 
 1. Fork the repository
