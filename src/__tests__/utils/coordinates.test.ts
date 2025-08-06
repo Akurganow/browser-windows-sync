@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { GeometryUtils } from '../../utils/geometry';
+import { calculateWindowPath, calculatePolygonPath } from '../../utils/geometry';
 import type { Screen } from '../../types/window';
 
-describe('GeometryUtils', () => {
+describe('Geometry Functions', () => {
   describe('calculateWindowPath', () => {
     it('should return empty string for non-existent window', () => {
       const screens: Screen[] = [
@@ -10,7 +10,7 @@ describe('GeometryUtils', () => {
         ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const result = GeometryUtils.calculateWindowPath(screens, 'non-existent');
+      const result = calculateWindowPath(screens, 'non-existent');
       expect(result).toBe('');
     });
 
@@ -19,7 +19,7 @@ describe('GeometryUtils', () => {
         ['window1', { screenX: 0, screenY: 0, screenWidth: 800, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const result = GeometryUtils.calculateWindowPath(screens, 'window1');
+      const result = calculateWindowPath(screens, 'window1');
       expect(result).toContain('M');
       expect(result).toContain('A'); // Circle path contains arcs
     });
@@ -31,7 +31,7 @@ describe('GeometryUtils', () => {
         ['window3', { screenX: 400, screenY: 600, screenWidth: 1600, screenHeight: 1200, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const result = GeometryUtils.calculateWindowPath(screens, 'window1');
+      const result = calculateWindowPath(screens, 'window1');
       
       // Should contain move command, line commands, and close path
       expect(result).toContain('M');
@@ -48,8 +48,8 @@ describe('GeometryUtils', () => {
         ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const path1 = GeometryUtils.calculateWindowPath(screens, 'window1');
-      const path2 = GeometryUtils.calculateWindowPath(screens, 'window2');
+      const path1 = calculateWindowPath(screens, 'window1');
+      const path2 = calculateWindowPath(screens, 'window2');
       
       // Paths should be identical because all windows draw the same global polygon
       expect(path1).toBe(path2);
@@ -64,7 +64,7 @@ describe('GeometryUtils', () => {
 
   describe('calculatePolygonPath', () => {
     it('should return empty string for empty screens array', () => {
-      const result = GeometryUtils.calculatePolygonPath([]);
+      const result = calculatePolygonPath([]);
       expect(result).toBe('');
     });
 
@@ -73,7 +73,7 @@ describe('GeometryUtils', () => {
         ['window1', { screenX: 0, screenY: 0, screenWidth: 800, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const result = GeometryUtils.calculatePolygonPath(screens);
+      const result = calculatePolygonPath(screens);
       expect(result).toContain('M');
       expect(result).toContain('A'); // Circle path contains arcs
     });
@@ -84,7 +84,7 @@ describe('GeometryUtils', () => {
         ['window2', { screenX: 800, screenY: 0, screenWidth: 1600, screenHeight: 600, windowWidth: 800, windowHeight: 600 }]
       ];
       
-      const result = GeometryUtils.calculatePolygonPath(screens);
+      const result = calculatePolygonPath(screens);
       expect(result).toContain('M');
       expect(result).toContain('L');
       expect(result).toContain('Z');

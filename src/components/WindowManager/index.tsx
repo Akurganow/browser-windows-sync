@@ -8,20 +8,20 @@ import { usePolygonPath } from '../../hooks/usePolygonPath';
 import './styles.css';
 
 interface WindowManagerProps {
-  /** Показывать ли отладочную панель */
+  /** Show debug panel */
   showDebugPanel?: boolean;
-  /** Позиция отладочной панели */
+  /** Debug panel position */
   debugPanelPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-  /** Цвет обводки полигона */
+  /** Polygon stroke color */
   strokeColor?: string;
-  /** Ширина обводки полигона */
+  /** Polygon stroke width */
   strokeWidth?: number;
-  /** CSS класс для кастомизации */
+  /** CSS class for customization */
   className?: string;
 }
 
 /**
- * Основной компонент для управления окнами и отображения полигона
+ * Main component for managing windows and displaying the polygon
  */
 export const WindowManager: React.FC<WindowManagerProps> = ({
   showDebugPanel = true,
@@ -54,7 +54,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
       <div className="window-manager window-manager--loading">
         <div className="window-manager__loader">
           <div className="window-manager__spinner"></div>
-          <span>Загрузка деталей окна...</span>
+          <span>Loading window details...</span>
         </div>
       </div>
     );
@@ -64,7 +64,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
     return (
       <div className="window-manager window-manager--error">
         <div className="window-manager__error">
-          <h3>Ошибка загрузки</h3>
+          <h3>Error loading</h3>
           <p>{error}</p>
         </div>
       </div>
@@ -73,10 +73,10 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
 
   return (
     <div className={`window-manager ${className}`}>
-      {/* Фоновый слой */}
+      {/* Background layer */}
       <BackgroundLayer windowDetails={windowDetails} />
 
-      {/* SVG полигон */}
+      {/* SVG polygon */}
       {screenCount > 0 && (
         <WindowCanvas
           path={path}
@@ -86,7 +86,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
         />
       )}
 
-      {/* Отладочная панель */}
+      {/* Debug panel */}
       {showDebugPanel && (
         <DebugPanel
           windowDetails={windowDetails}

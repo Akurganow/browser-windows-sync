@@ -1,75 +1,75 @@
 /**
- * Информация об экране из Screen Management API
+ * Screen information from Screen Management API
  */
 export interface ScreenInfo {
-  /** Левая координата экрана */
+  /** Left screen coordinate */
   left: number;
-  /** Верхняя координата экрана */
+  /** Top screen coordinate */
   top: number;
-  /** Доступная ширина экрана */
+  /** Available screen width */
   availWidth: number;
-  /** Доступная высота экрана */
+  /** Available screen height */
   availHeight: number;
-  /** Является ли экран основным */
+  /** Is this screen primary */
   isPrimary?: boolean;
-  /** Масштаб экрана */
+  /** Screen scale */
   devicePixelRatio?: number;
 }
 
 /**
- * Детали всех экранов из Screen Management API
+ * Details of all screens from Screen Management API
  */
 export interface ScreenDetails {
-  /** Массив всех экранов */
+  /** Array of all screens */
   screens: ScreenInfo[];
-  /** Текущий экран */
+  /** Current screen */
   currentScreen?: ScreenInfo;
 }
 
 /**
- * Конфигурация экрана для fallback режима
+ * Screen configuration for fallback mode
  */
 export interface ScreenConfig {
-  /** Количество мониторов (по умолчанию) */
+  /** Default number of monitors (default) */
   defaultMonitorCount: number;
-  /** Ширина одного монитора */
+  /** Width of one monitor */
   defaultWidth: number;
-  /** Высота одного монитора */
+  /** Height of one monitor */
   defaultHeight: number;
-  /** Расположение мониторов (horizontal | vertical) */
+  /** Monitor layout (horizontal | vertical) */
   layout: 'horizontal' | 'vertical';
 }
 
 /**
- * Результат расчета общих границ экранов
+ * Result of calculating common screen bounds
  */
 export interface ScreenBounds {
-  /** Минимальная X координата */
+  /** Minimum X coordinate */
   minX: number;
-  /** Минимальная Y координата */
+  /** Minimum Y coordinate */
   minY: number;
-  /** Максимальная X координата */
+  /** Maximum X coordinate */
   maxX: number;
-  /** Максимальная Y координата */
+  /** Maximum Y coordinate */
   maxY: number;
-  /** Общая ширина */
+  /** Total width */
   totalWidth: number;
-  /** Общая высота */
+  /** Total height */
   totalHeight: number;
 }
 
 /**
- * Константы для работы с экранами
+ * Constants for working with screens
  */
 export const SCREEN_CONSTANTS = {
-  /** Конфигурация по умолчанию */
+  /** Default configuration */
   DEFAULT_CONFIG: {
     defaultMonitorCount: 3,
     defaultWidth: 1920,
     defaultHeight: 1080,
     layout: 'horizontal' as const,
   },
-  /** Минимальные размеры экрана */
+  /** Minimum screen dimensions */
   MIN_DIMENSIONS: {
     width: 800,
     height: 600,

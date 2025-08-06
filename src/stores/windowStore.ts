@@ -5,62 +5,62 @@ import { StorageManager } from '../utils/storage';
 import { createBroadcastSync, type LocalSync } from '../utils/localSync';
 
 interface WindowState {
-  /** ID текущего окна */
+  /** ID of the current window */
   currentWindowId: string | null;
-  /** Детали текущего окна */
+  /** Details of the current window */
   currentWindowDetails: WindowDetails | null;
-  /** Все окна в системе */
+  /** All windows in the system */
   allWindows: Map<string, WindowDetails>;
-  /** Инициализировано ли состояние */
+  /** Is the state initialized */
   isInitialized: boolean;
-  /** Флаг инициализации для разрешения публикации без проверки фокуса */
+  /** Flag for initialization to allow publishing without focus check */
   isInitializing: boolean;
 }
 
 interface WindowActions {
-  /** Инициализация store с получением ID экрана */
+  /** Initialization of the store with screen ID */
   initialize: () => Promise<void>;
-  /** Обновление деталей текущего окна */
+  /** Update details of the current window */
   updateCurrentWindow: (details: WindowDetails) => void;
-  /** Обновление данных другого окна */
+  /** Update details of another window */
   updateOtherWindow: (windowId: string, details: WindowDetails) => void;
-  /** Удаление окна из списка */
+  /** Remove window from the list */
   removeWindow: (windowId: string) => void;
-  /** Загрузка всех окон из localStorage */
+  /** Load all windows from localStorage */
   loadAllWindows: () => void;
-  /** Получение массива экранов для совместимости */
+  /** Get array of screens for compatibility */
   getScreens: () => Screen[];
-  /** Получение LocalSync для работы с синхронизацией */
+  /** Get LocalSync for synchronization */
   getLocalSync: () => LocalSync | null;
-  /** Очистка всех данных */
+  /** Clear all data */
   clear: () => void;
 }
 
 type WindowStore = WindowState & WindowActions;
 
-// Создаем синхронизацию между окнами
+// Create synchronization between windows
 let windowSync: LocalSync | null = null;
 
 export const useWindowStore = create<WindowStore>()(
   subscribeWithSelector((set, get) => ({
-    // Состояние
+    // State
     currentWindowId: null,
     currentWindowDetails: null,
     allWindows: new Map(),
     isInitialized: false,
     isInitializing: false,
 
-    // Действия
+    // Actions
     initialize: async () => {
       try {
-        // Получаем уникальный ID вкладки/окна браузера
+        // Get unique ID of the browser tab/window
         const windowId = StorageManager.generateScreenId();
         
-        // Получаем данные текущего окна СИНХРОННО при инициализации
+        // Get current window details SYNCHRONOUSLY during initialization
         const { ScreenApiManager } = await import('../utils/screenApi');
         const currentWindowDetails = await ScreenApiManager.getWindowDetails();
         
-        // Инициализируем состояние с данными текущего окна
+        // Initialize state with current window data
         const allWindows = new Map<string, WindowDetails>();
         allWindows.set(windowId, currentWindowDetails);
 
@@ -72,24 +72,24 @@ export const useWindowStore = create<WindowStore>()(
           isInitializing: true,
         });
 
-        // Сбрасываем флаг инициализации через 5 секунд
+        // Reset initialization flag after 5 seconds
         setTimeout(() => {
           set({ isInitializing: false });
         }, 5000);
 
-        // Инициализируем синхронизацию между окнами через BroadcastChannel
+        // Initialize synchronization between windows via BroadcastChannel
         windowSync = createBroadcastSync({
           channelName: 'browser-windows-sync',
           readState: () => get().allWindows,
           applyState: (newAllWindows) => {
             const { allWindows: currentAllWindows } = get();
             
-            // Убеждаемся, что это Map
+            // Ensure it's a Map
             const incomingWindows = newAllWindows instanceof Map 
               ? newAllWindows 
               : new Map(Object.entries(newAllWindows || {}) as [string, WindowDetails][]);
             
-            // Объединяем текущие данные с входящими, приоритет у входящих данных
+            // Merge current data with incoming, prioritize incoming data
             const mergedWindows = new Map(currentAllWindows);
             for (const [windowId, windowDetails] of incomingWindows) {
               mergedWindows.set(windowId, windowDetails);
@@ -99,17 +99,17 @@ export const useWindowStore = create<WindowStore>()(
           },
         });
 
-        // Запрашиваем начальное состояние от других окон и ждем ответа
+        // Request initial state from other windows and wait for response
         setTimeout(async () => {
           if (windowSync) {
             windowSync.requestInitialState();
             
-            // Ждем завершения начальной синхронизации
+            // Wait for initial synchronization to complete
             await windowSync.waitForInitialSync();
           }
         }, 50);
       } catch (error) {
-        // Ошибка инициализации - используем fallback с пустым состоянием
+        // Error during initialization - use fallback with empty state
         const windowId = StorageManager.generateScreenId();
         const allWindows = new Map<string, WindowDetails>();
 
@@ -120,7 +120,7 @@ export const useWindowStore = create<WindowStore>()(
           isInitializing: true,
         });
 
-        // Сбрасываем флаг инициализации через 5 секунд
+        // Reset initialization flag after 5 seconds
         setTimeout(() => {
           set({ isInitializing: false });
         }, 5000);
@@ -134,7 +134,7 @@ export const useWindowStore = create<WindowStore>()(
         return;
       }
 
-      // Обновляем в store
+      // Update in store
       const newAllWindows = new Map(allWindows);
       newAllWindows.set(currentWindowId, details);
 
@@ -143,7 +143,7 @@ export const useWindowStore = create<WindowStore>()(
         allWindows: newAllWindows,
       });
 
-      // Публикуем изменения через BroadcastChannel если окно в фокусе или во время инициализации
+      // Publish changes via BroadcastChannel if window is in focus or during initialization
       if (windowSync && !windowSync.isApplyingRemote() && (isInitializing || document.hasFocus())) {
         windowSync.publish();
       }
@@ -170,23 +170,23 @@ export const useWindowStore = create<WindowStore>()(
 
       set({ allWindows: newAllWindows });
 
-      // Публикуем изменения через BroadcastChannel если окно в фокусе или во время инициализации
+      // Publish changes via BroadcastChannel if window is in focus or during initialization
       if (windowSync && !windowSync.isApplyingRemote() && (isInitializing || document.hasFocus())) {
         windowSync.publish();
       }
     },
 
     loadAllWindows: () => {
-      // BroadcastChannel автоматически синхронизирует состояние между окнами
-      // Этот метод больше не нужен, но оставляем для совместимости
+      // BroadcastChannel automatically synchronizes state between windows
+      // This method is no longer needed, but kept for compatibility
     },
 
     getScreens: (): Screen[] => {
       const { allWindows } = get();
       
-      // Проверяем, что allWindows является Map
+      // Check if allWindows is a Map
       if (!(allWindows instanceof Map)) {
-        // Если это объект, конвертируем в Map
+        // If it's an object, convert to Map
         const mapFromObject = new Map(Object.entries(allWindows || {}) as [string, WindowDetails][]);
         set({ allWindows: mapFromObject });
         return Array.from(mapFromObject.entries());
@@ -200,13 +200,13 @@ export const useWindowStore = create<WindowStore>()(
     },
 
     clear: () => {
-      // Очищаем синхронизацию
+      // Clear synchronization
       if (windowSync) {
         windowSync.destroy();
         windowSync = null;
       }
 
-      // Очищаем старые данные (для совместимости)
+      // Clear old data (for compatibility)
       StorageManager.clearAllScreens();
 
       set({

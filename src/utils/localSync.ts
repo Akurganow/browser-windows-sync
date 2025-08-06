@@ -29,11 +29,11 @@ class BroadcastSync implements LocalSync {
     this.readState = options.readState;
     this.applyState = options.applyState;
 
-    // Создаем Promise для ожидания начальной синхронизации
+    // Create a Promise to wait for initial synchronization
     this.initialSyncPromise = new Promise<void>((resolve) => {
       this.initialSyncResolve = resolve;
       
-      // Автоматически резолвим через 3 секунды, если никто не ответил
+      // Automatically resolve after 3 seconds if no one responded
       setTimeout(() => {
         if (!this.hasReceivedInitialData) {
           this.hasReceivedInitialData = true;
@@ -52,11 +52,11 @@ class BroadcastSync implements LocalSync {
       if (type === 'window-state-update') {
         this.isApplyingRemoteState = true;
         
-        // Конвертируем объект обратно в Map с правильной типизацией
+        // Convert object back to Map with correct type
         const stateMap = new Map(Object.entries(data || {}) as [string, WindowDetails][]);
         this.applyState(stateMap);
         
-        // Отмечаем, что получили данные, и резолвим Promise начальной синхронизации
+        // Mark that we received data and resolve the initial synchronization Promise
         if (!this.hasReceivedInitialData && stateMap.size > 0) {
           this.hasReceivedInitialData = true;
           if (this.initialSyncResolve) {
@@ -67,10 +67,10 @@ class BroadcastSync implements LocalSync {
         
         this.isApplyingRemoteState = false;
       } else if (type === 'request-state') {
-        // Другое окно запрашивает наше состояние - отправляем его через специальный метод
+        // Another window requests our state - send it via a special method
         this.publishStateResponse();
       } else if (type === 'request-initial-state') {
-        // Новое окно запрашивает полное состояние для инициализации
+        // A new window requests full state for initialization
         this.publishInitialStateResponse();
       }
     } catch (error) {
@@ -80,13 +80,13 @@ class BroadcastSync implements LocalSync {
 
   publish(): void {
     if (this.isApplyingRemoteState) {
-      return; // Избегаем циклической синхронизации
+      return; // Avoid circular synchronization
     }
 
     try {
       const currentState = this.readState();
       
-      // Конвертируем Map в объект для передачи через BroadcastChannel
+      // Convert Map to object for transmission via BroadcastChannel
       const stateObject = Object.fromEntries(currentState.entries());
       
       this.channel.postMessage({
@@ -95,61 +95,61 @@ class BroadcastSync implements LocalSync {
         timestamp: Date.now()
       });
     } catch (error) {
-      // Ошибка публикации - игнорируем
+      // Publication error - ignore
     }
   }
 
   /**
-   * Отправляет состояние в ответ на запрос, минуя обычные проверки фокуса
+   * Sends state in response to a request, bypassing normal focus checks
    */
   private publishStateResponse(): void {
     if (this.isApplyingRemoteState) {
-      return; // Избегаем циклической синхронизации
+      return; // Avoid circular synchronization
     }
 
     try {
       const currentState = this.readState();
       
-      // Отправляем состояние только если у нас есть данные о нескольких окнах
-      // или если это единственное окно с полными данными
+      // Send state only if we have data about multiple windows
+      // or if it's the only window with full data
       if (currentState.size > 0) {
-        // Конвертируем Map в объект для передачи через BroadcastChannel
+        // Convert Map to object for transmission via BroadcastChannel
         const stateObject = Object.fromEntries(currentState.entries());
         
         this.channel.postMessage({
           type: 'window-state-update',
           data: stateObject,
           timestamp: Date.now(),
-          isResponse: true // Помечаем как ответ на запрос
+          isResponse: true // Mark as response to a request
         });
       }
     } catch (error) {
-      // Ошибка публикации - игнорируем
+      // Publication error - ignore
     }
   }
 
   /**
-   * Отправляет полное состояние для инициализации нового окна
+   * Sends full state for initialization of a new window
    */
   private publishInitialStateResponse(): void {
     if (this.isApplyingRemoteState) {
-      return; // Избегаем циклической синхронизации
+      return; // Avoid circular synchronization
     }
 
     try {
       const currentState = this.readState();
       
-      // Всегда отправляем состояние для инициализации, даже если у нас только одно окно
+      // Always send state for initialization, even if we only have one window
       const stateObject = Object.fromEntries(currentState.entries());
       
       this.channel.postMessage({
         type: 'window-state-update',
         data: stateObject,
         timestamp: Date.now(),
-        isInitialResponse: true // Помечаем как ответ на запрос инициализации
+        isInitialResponse: true // Mark as response to an initialization request
       });
     } catch (error) {
-      // Ошибка публикации - игнорируем
+      // Publication error - ignore
     }
   }
 
@@ -160,12 +160,12 @@ class BroadcastSync implements LocalSync {
         timestamp: Date.now()
       });
     } catch (error) {
-      // Ошибка запроса - игнорируем
+      // Request error - ignore
     }
   }
 
   /**
-   * Запрашивает полное состояние для инициализации нового окна
+   * Requests full state for initialization of a new window
    */
   requestInitialState(): void {
     try {
@@ -174,7 +174,7 @@ class BroadcastSync implements LocalSync {
         timestamp: Date.now()
       });
     } catch (error) {
-      // Ошибка запроса - игнорируем
+      // Request error - ignore
     }
   }
 

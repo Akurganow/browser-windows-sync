@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
-// Mock для Screen Management API
+// Mock for Screen Management API
 Object.defineProperty(window, 'getScreenDetails', {
   writable: true,
   value: vi.fn().mockResolvedValue({
@@ -51,14 +51,14 @@ Object.defineProperty(window, 'sessionStorage', {
   value: sessionStorageMock
 });
 
-// Mock для crypto.randomUUID
+// Mock for crypto.randomUUID
 Object.defineProperty(window, 'crypto', {
   value: {
     randomUUID: vi.fn(() => 'mock-uuid-' + Math.random().toString(36).substr(2, 9))
   }
 });
 
-// Mock для window properties
+// Mock for window properties
 Object.defineProperty(window, 'screen', {
   writable: true,
   value: {

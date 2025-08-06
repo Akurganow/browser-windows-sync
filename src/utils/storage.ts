@@ -2,66 +2,66 @@ import type { WindowDetails, Screen } from '../types/window';
 import { WINDOW_CONSTANTS } from '../types/window';
 
 /**
- * Утилиты для работы с localStorage и sessionStorage
+ * Utilities for working with localStorage and sessionStorage
  */
 export class StorageManager {
   /**
-   * Сохраняет детали окна в localStorage
+   * Saves window details to localStorage
    */
   static saveWindowDetails(screenId: string, details: WindowDetails): void {
     try {
       window.localStorage.setItem(screenId, JSON.stringify(details));
     } catch (error) {
-      console.warn('Не удалось сохранить детали окна в localStorage:', error);
+      console.warn('Failed to save window details to localStorage:', error);
     }
   }
 
   /**
-   * Загружает детали окна из localStorage
+   * Loads window details from localStorage
    */
   static loadWindowDetails(screenId: string): WindowDetails | null {
     try {
       const data = window.localStorage.getItem(screenId);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.warn('Не удалось загрузить детали окна из localStorage:', error);
+      console.warn('Failed to load window details from localStorage:', error);
       return null;
     }
   }
 
   /**
-   * Удаляет детали окна из localStorage и sessionStorage
+   * Removes window details from localStorage and sessionStorage
    */
   static removeWindowDetails(screenId: string): void {
     try {
       window.localStorage.removeItem(screenId);
       
-      // Также очищаем sessionStorage для этого окна
+      // Also clear sessionStorage for this window
       if (window.sessionStorage.getItem(WINDOW_CONSTANTS.STORAGE_PREFIX) === screenId) {
         window.sessionStorage.removeItem(WINDOW_CONSTANTS.STORAGE_PREFIX);
       }
     } catch (error) {
-      console.warn('Не удалось удалить детали окна из localStorage:', error);
+      console.warn('Failed to remove window details from localStorage:', error);
     }
   }
 
   /**
-   * Получает все экраны из localStorage с детерминированной сортировкой
+   * Gets all screens from localStorage with deterministic sorting
    */
   static getAllScreens(): Screen[] {
     try {
       return Object.entries(window.localStorage)
         .filter(([key]) => key.startsWith(WINDOW_CONSTANTS.STORAGE_PREFIX))
         .map(([key, value]) => [key, JSON.parse(value)] as Screen)
-        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB)); // Детерминированная сортировка по ID
+        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB)); // Deterministic sorting by ID
     } catch (error) {
-      console.warn('Не удалось получить экраны из localStorage:', error);
+      console.warn('Failed to get screens from localStorage:', error);
       return [];
     }
   }
 
   /**
-   * Получает экраны кроме текущего
+   * Gets screens except the current one
    */
   static getOtherScreens(currentScreenId: string): Screen[] {
     return StorageManager.getAllScreens()
@@ -69,7 +69,7 @@ export class StorageManager {
   }
 
   /**
-   * Генерирует уникальный ID для окна/вкладки браузера
+   * Generates a unique ID for a window/browser tab
    */
   static generateScreenId(): string {
     const existingScreenId = sessionStorage.getItem(WINDOW_CONSTANTS.STORAGE_PREFIX);
@@ -78,7 +78,7 @@ export class StorageManager {
       return existingScreenId;
     }
 
-    // Генерируем уникальный ID для каждой вкладки/окна браузера
+    // Generates a unique ID for each browser tab/window
     const uniqueWindowId = crypto.randomUUID();
     const fullScreenId = `${WINDOW_CONSTANTS.STORAGE_PREFIX}_${uniqueWindowId}`;
 
@@ -88,7 +88,7 @@ export class StorageManager {
   }
 
   /**
-   * Очищает все данные экранов из localStorage
+   * Clears all screen data from localStorage
    */
   static clearAllScreens(): void {
     try {
@@ -97,12 +97,12 @@ export class StorageManager {
       
       keysToRemove.forEach(key => window.localStorage.removeItem(key));
     } catch (error) {
-      console.warn('Не удалось очистить данные экранов:', error);
+      console.warn('Failed to clear screen data:', error);
     }
   }
 
   /**
-   * Проверяет, поддерживается ли localStorage
+   * Checks if localStorage is supported
    */
   static isLocalStorageSupported(): boolean {
     try {
@@ -116,7 +116,7 @@ export class StorageManager {
   }
 
   /**
-   * Проверяет, поддерживается ли sessionStorage
+   * Checks if sessionStorage is supported
    */
   static isSessionStorageSupported(): boolean {
     try {
@@ -130,7 +130,7 @@ export class StorageManager {
   }
 
   /**
-   * Подписывается на изменения в localStorage
+   * Subscribes to localStorage changes
    */
   static subscribeToStorageChanges(
     callback: (event: StorageEvent) => void,

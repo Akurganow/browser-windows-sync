@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { Screen } from '../types/window';
-import { GeometryUtils } from '../utils/geometry';
+import { calculateWindowPath, calculatePolygonPath } from '../utils/geometry';
 import { CoordinateSystem } from '../utils/coordinates';
 
 export const usePolygonPath = (
@@ -14,13 +14,13 @@ export const usePolygonPath = (
 } => {
   const path = useMemo(() => {
     if (currentWindowId) {
-      return GeometryUtils.calculateWindowPath(screens, currentWindowId);
+      return calculateWindowPath(screens, currentWindowId);
     }
-    return GeometryUtils.calculatePolygonPath(screens);
+    return calculatePolygonPath(screens);
   }, [screens, currentWindowId]);
 
   const polygon = useMemo(() => {
-    return GeometryUtils.calculatePolygonPath(screens);
+    return calculatePolygonPath(screens);
   }, [screens]);
 
   const viewBox = useMemo(() => {

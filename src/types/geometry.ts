@@ -1,63 +1,63 @@
 /**
- * Точка в двумерном пространстве
+ * Point in two-dimensional space
  */
 export interface Point {
-  /** X координата */
+  /** X coordinate */
   x: number;
-  /** Y координата */
+  /** Y coordinate */
   y: number;
 }
 
 /**
- * Прямоугольник с координатами и размерами
+ * Rectangle with coordinates and dimensions
  */
 export interface Rectangle {
-  /** X координата левого верхнего угла */
+  /** X coordinate of the top-left corner */
   x: number;
-  /** Y координата левого верхнего угла */
+  /** Y coordinate of the top-left corner */
   y: number;
-  /** Ширина прямоугольника */
+  /** Width of the rectangle */
   width: number;
-  /** Высота прямоугольника */
+  /** Height of the rectangle */
   height: number;
 }
 
 /**
- * Полигон с точками и SVG путем
+ * Polygon with points and SVG path
  */
 export interface Polygon {
-  /** Массив точек полигона */
+  /** Array of polygon points */
   points: Point[];
-  /** SVG путь для отрисовки */
+  /** SVG path for drawing */
   path: string;
-  /** Центр полигона */
+  /** Polygon center */
   center: Point;
 }
 
 /**
- * ViewBox для SVG элемента
+ * ViewBox for SVG element
  */
 export interface ViewBox {
-  /** X координата начала */
+  /** X coordinate of the start */
   x: number;
-  /** Y координата начала */
+  /** Y coordinate of the start */
   y: number;
-  /** Ширина области просмотра */
+  /** Width of the viewing area */
   width: number;
-  /** Высота области просмотра */
+  /** Height of the viewing area */
   height: number;
 }
 
 /**
- * Границы области
+ * Bounds of the area
  */
 export interface Bounds {
-  /** Минимальная X координата */
+  /** Minimum X coordinate */
   minX: number;
-  /** Минимальная Y координата */
+  /** Minimum Y coordinate */
   minY: number;
-  /** Максимальная X координата */
+  /** Maximum X coordinate */
   maxX: number;
-  /** Максимальная Y координата */
+  /** Maximum Y coordinate */
   maxY: number;
 }

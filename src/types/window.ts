@@ -1,44 +1,44 @@
 /**
- * Детали окна с координатами и размерами
+ * Window details with coordinates and dimensions
  */
 export interface WindowDetails {
-  /** X координата окна на экране */
+  /** X coordinate of the window on the screen */
   screenX: number;
-  /** Y координата окна на экране */
+  /** Y coordinate of the window on the screen */
   screenY: number;
-  /** Общая ширина всех экранов */
+  /** Total width of all screens */
   screenWidth: number;
-  /** Общая высота всех экранов */
+  /** Total height of all screens */
   screenHeight: number;
-  /** Ширина окна */
+  /** Window width */
   windowWidth: number;
-  /** Высота окна */
+  /** Window height */
   windowHeight: number;
 }
 
 /**
- * Состояние окна с идентификатором и активностью
+ * Window state with identifier and activity
  */
 export interface WindowState {
-  /** Уникальный идентификатор окна */
+  /** Unique window identifier */
   id: string;
-  /** Детали окна */
+  /** Window details */
   details: WindowDetails;
-  /** Активно ли окно */
+  /** Is the window active */
   isActive: boolean;
 }
 
 /**
- * Тип для представления экрана как кортежа [id, details]
+ * Type for representing a screen as a tuple [id, details]
  */
 export type Screen = [string, WindowDetails];
 
 /**
- * Константы для работы с окнами
+ * Constants for working with windows
  */
 export const WINDOW_CONSTANTS = {
-  /** Префикс для localStorage */
+  /** LocalStorage prefix */
   STORAGE_PREFIX: 'screenId',
-  /** Радиус круга для одного окна */
+  /** Radius for a single window */
   SINGLE_WINDOW_RADIUS: 5,
 } as const;

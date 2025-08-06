@@ -3,18 +3,18 @@ import type { ScreenDetails, ScreenInfo, ScreenBounds, ScreenConfig } from '../t
 import { SCREEN_CONSTANTS } from '../types/screen';
 
 /**
- * Утилиты для работы с Screen Management API
+ * Utilities for working with Screen Management API
  */
 export class ScreenApiManager {
   /**
-   * Проверяет, поддерживается ли Screen Management API
+   * Checks if Screen Management API is supported
    */
   static isScreenManagementSupported(): boolean {
     return 'getScreenDetails' in window;
   }
 
   /**
-   * Получает детали всех экранов через Screen Management API
+   * Gets details of all screens via Screen Management API
    */
   static async getScreenDetails(): Promise<ScreenDetails | null> {
     if (!ScreenApiManager.isScreenManagementSupported()) {
@@ -28,13 +28,13 @@ export class ScreenApiManager {
         currentScreen: screenDetails.currentScreen,
       };
     } catch (error) {
-      console.warn('Screen Management API недоступен:', error);
+      console.warn('Screen Management API is not available:', error);
       return null;
     }
   }
 
   /**
-   * Вычисляет границы всех экранов
+   * Calculates bounds of all screens
    */
   static calculateScreenBounds(screens: ScreenInfo[]): ScreenBounds {
     if (screens.length === 0) {
@@ -64,7 +64,7 @@ export class ScreenApiManager {
   }
 
   /**
-   * Создает fallback конфигурацию для случаев без Screen Management API
+   * Creates a fallback configuration for cases without Screen Management API
    */
   static createFallbackBounds(config: ScreenConfig = SCREEN_CONSTANTS.DEFAULT_CONFIG): ScreenBounds {
     const { defaultMonitorCount, defaultWidth, defaultHeight, layout } = config;
@@ -91,18 +91,18 @@ export class ScreenApiManager {
   }
 
   /**
-   * Получает детали окна с учетом всех экранов
+   * Gets details of a window considering all screens
    */
   static async getWindowDetails(): Promise<WindowDetails> {
     let bounds: ScreenBounds;
 
-    // Попытка использовать Screen Management API
+    // Attempt to use Screen Management API
     const screenDetails = await ScreenApiManager.getScreenDetails();
     
     if (screenDetails && screenDetails.screens.length > 0) {
       bounds = ScreenApiManager.calculateScreenBounds(screenDetails.screens);
     } else {
-      // Fallback: просто используем текущие размеры экрана как есть
+      // Fallback: simply use current screen dimensions as is
       const realScreenWidth = window.screen.availWidth;
       const realScreenHeight = window.screen.availHeight;
       
@@ -121,14 +121,14 @@ export class ScreenApiManager {
       screenY: window.screenY - bounds.minY,
       screenWidth: bounds.totalWidth,
       screenHeight: bounds.totalHeight,
-      // Используем innerWidth/innerHeight, чтобы работать с размерами области отображения без рамок браузера
+      // Use innerWidth/innerHeight to work with display area dimensions without browser frames
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
     };
   }
 
   /**
-   * Проверяет, изменились ли размеры экранов
+   * Checks if screen layout has changed
    */
   static async hasScreenLayoutChanged(previousBounds: ScreenBounds): Promise<boolean> {
     const screenDetails = await ScreenApiManager.getScreenDetails();
@@ -148,7 +148,7 @@ export class ScreenApiManager {
   }
 
   /**
-   * Получает информацию о текущем экране с ID
+   * Gets current screen info with ID
    */
   static async getCurrentScreenInfo(): Promise<ScreenInfo & { id?: string } | null> {
     const screenDetails = await ScreenApiManager.getScreenDetails();
@@ -157,12 +157,12 @@ export class ScreenApiManager {
       return null;
     }
 
-    // Находим экран, на котором находится текущее окно
+    // Find the screen on which the current window is located
     const windowDetails = await ScreenApiManager.getWindowDetails();
     const windowX = windowDetails.screenX;
     const windowY = windowDetails.screenY;
     
-    // Получаем bounds для корректного сравнения координат
+    // Get bounds for correct coordinate comparison
     const bounds = ScreenApiManager.calculateScreenBounds(screenDetails.screens);
 
     const currentScreen = screenDetails.screens.find(screen => {
@@ -178,7 +178,7 @@ export class ScreenApiManager {
       return null;
     }
 
-    // Проверяем, есть ли ID в реальном API
+    // Check if there is an ID in the real API
     const screenWithId = currentScreen as any;
     
     return {
@@ -188,7 +188,7 @@ export class ScreenApiManager {
   }
 
   /**
-   * Получает стабильный ID экрана
+   * Gets a stable screen ID
    */
   static async getScreenId(): Promise<string> {
     const currentScreen = await ScreenApiManager.getCurrentScreenInfo();
@@ -197,7 +197,7 @@ export class ScreenApiManager {
       return `screen_${currentScreen.id}`;
     }
 
-    // Fallback: создаем постоянный ID на основе геометрии экрана
+    // Fallback: create a permanent ID based on screen geometry
     const screenKey = currentScreen 
       ? `${currentScreen.left}_${currentScreen.top}_${currentScreen.availWidth}_${currentScreen.availHeight}`
       : `${(window.screen as any).availLeft || 0}_${(window.screen as any).availTop || 0}_${window.screen.width}_${window.screen.height}`;
@@ -206,15 +206,15 @@ export class ScreenApiManager {
   }
 
   /**
-   * Подписывается на изменения экранов (если поддерживается)
+   * Subscribes to screen changes (if supported)
    */
   static subscribeToScreenChanges(callback: () => void): (() => void) | null {
     if (!ScreenApiManager.isScreenManagementSupported()) {
       return null;
     }
 
-    // В будущих версиях Screen Management API может появиться событие изменения экранов
-    // Пока используем fallback через resize
+    // In future versions of Screen Management API, screen change events may appear
+    // For now, we use a fallback via resize
     const handler = () => {
       callback();
     };
